@@ -1,5 +1,6 @@
 import Papa from 'papaparse';
 import type { PortfolioItem } from '../types/portfolio';
+import { getSheetUrl } from './storage';
 
 // Italian locale: "13.418,96" → 13418.96
 function parseItalianNumber(raw: string): number {
@@ -35,7 +36,10 @@ function mapRow(row: Record<string, string>): PortfolioItem {
 }
 
 export async function fetchPortfolioData(): Promise<PortfolioItem[]> {
-  const url = import.meta.env.VITE_SHEET_URL as string;
+  // Runtime only — never baked into the JS bundle at build time
+  const url = getSheetUrl();
+
+  if (!url) throw new Error('URL del foglio non configurato.');
 
   const response = await fetch(url);
   if (!response.ok) {

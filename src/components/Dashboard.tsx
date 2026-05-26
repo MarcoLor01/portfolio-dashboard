@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Settings } from 'lucide-react';
 import { fetchPortfolioData } from '../lib/api';
 import { aggregatePortfolio, type AggregatedPosition } from '../lib/portfolioEngine';
 import type { PortfolioItem } from '../types/portfolio';
@@ -10,7 +10,11 @@ import { PACTracker } from './PACTracker';
 import { RebalancingCalculator } from './RebalancingCalculator';
 import { HoldingsTable } from './HoldingsTable';
 
-export function Dashboard() {
+interface Props {
+  onReset: () => void;
+}
+
+export function Dashboard({ onReset }: Props) {
   const [positions, setPositions] = useState<AggregatedPosition[]>([]);
   const [rawItems, setRawItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,13 +87,23 @@ export function Dashboard() {
               </p>
             )}
           </div>
-          <button
-            onClick={load}
-            className="flex items-center gap-1.5 text-zinc-500 hover:text-zinc-200 text-sm transition-colors"
-          >
-            <RefreshCw size={13} />
-            Aggiorna
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={load}
+              className="flex items-center gap-1.5 text-zinc-500 hover:text-zinc-200 text-sm transition-colors"
+            >
+              <RefreshCw size={13} />
+              Aggiorna
+            </button>
+            <button
+              onClick={onReset}
+              className="flex items-center gap-1.5 text-zinc-600 hover:text-zinc-400 text-sm transition-colors"
+              title="Cambia sorgente dati"
+            >
+              <Settings size={13} />
+              Sorgente
+            </button>
+          </div>
         </div>
 
         {/* KPI + toggle */}
